@@ -107,14 +107,14 @@ CRITICAL RULES:
 - OUTPUT FORMAT: After ALL searches are complete, respond ONLY with valid JSON starting with { and ending with }. No text outside JSON. No markdown. No backticks.`;
 
     const body = {
-      model: 'claude-opus-4-5',
-      max_tokens: 4000,
+      model: 'claude-sonnet-4-5',
+      max_tokens: 2500,
       system: systemPrompt,
       tools: [
         {
           type: 'web_search_20250305',
           name: 'web_search',
-          max_uses: 5
+          max_uses: 3
         }
       ],
       messages: messages
