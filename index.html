@@ -828,82 +828,90 @@ async function runAnalysis() {
 
   const lang = currentLang;
   const isEn = lang === 'en';
+  const langInstruction = isEn
+    ? 'LANGUAGE: Write ALL text values in the JSON output in English.'
+    : 'BAHASA: Tulis SEMUA nilai teks dalam output JSON dalam Bahasa Indonesia. Gunakan Bahasa Indonesia yang formal dan profesional.';
+
   const prompt = `Analyze the following brand with deep web research. Respond ONLY with valid JSON starting with { and ending with }. No text outside JSON.
 
+${langInstruction}
+
 MANDATORY RESEARCH STEPS BEFORE OUTPUTTING JSON:
-1. Search "[brand name] Indonesia" — get official info, founding year, positioning
-2. Search "kompetitor [brand name] Indonesia" — find DIRECT, REAL competitors only
-3. Search "[brand name] harga" or "[brand name] price" — confirm SES pricing tier
-4. Search "[brand name] Instagram TikTok" — get real social media data
-5. Search "[brand name] target market Indonesia" — confirm audience demographics
+1. Search the brand name — identify what it is, origin, founding year, primary market
+2. Search direct competitors in same product category and price tier (NOT generic industry names)
+3. Search brand pricing/menu to confirm SES tier
+4. Search brand social media presence and follower scale
+5. Search recent news or campaigns about the brand
 
+INPUT DATA:
 ${inputSection}
-GOALS: ${getGoals()}
-${extras ? 'DATA: '+extras : ''}
 
-JSON format:
+GOALS: ${getGoals()}
+${extras ? 'ADDITIONAL DATA: '+extras : ''}
+
+Respond with this exact JSON structure (all text values in ${isEn ? 'English' : 'Bahasa Indonesia'}):
 {
   "brand": {
     "name": "brand name",
-    "industry": "industry",
-    "sub_category": "sub category",
-    "founding_year": "year founded if found",
-    "target_age": "target age range",
-    "target_gender": "All/Female/Female-dominated/Male-dominated",
+    "industry": "${isEn ? 'industry' : 'industri'}",
+    "sub_category": "${isEn ? 'sub category' : 'sub kategori'}",
+    "founding_year": "${isEn ? 'year founded' : 'tahun berdiri'}",
+    "target_age": "${isEn ? 'target age range' : 'rentang usia target'}",
+    "target_gender": "All/Female-dominated/Male-dominated",
     "ses": "SES A / SES A-B / SES B / SES B-C / SES C",
-    "ses_rationale": "1 sentence explaining SES based on pricing and positioning data found",
-    "market_reach": "Local/Regional/National/Global",
+    "ses_rationale": "${isEn ? '1 sentence SES justification based on pricing data' : '1 kalimat justifikasi SES berdasarkan data harga'}",
+    "market_reach": "${isEn ? 'Local/Regional/National/Global' : 'Lokal/Regional/Nasional/Global'}",
     "price_positioning": "Budget/Mid-range/Premium/Luxury",
-    "avg_price_point": "average product price in IDR if found",
-    "brand_voice": "brand tone based on actual content observed",
-    "core_products": "core product max 1 sentence",
-    "usp": "unique selling proposition based on real data",
-    "competitors": ["REAL direct competitor 1","REAL direct competitor 2","REAL direct competitor 3","REAL direct competitor 4"],
-    "competitor_context": "1 sentence on competitive positioning vs named competitors",
-    "platforms": ["active platform 1","active platform 2"],
-    "social_presence": "brief note on social media scale if data found",
+    "avg_price_point": "${isEn ? 'average product price if found' : 'harga produk rata-rata jika ditemukan'}",
+    "brand_voice": "${isEn ? 'brand tone based on actual content observed' : 'tone brand berdasarkan konten aktual yang diamati'}",
+    "core_products": "${isEn ? 'core product max 1 sentence' : 'produk utama maksimal 1 kalimat'}",
+    "usp": "${isEn ? 'unique selling proposition based on real data' : 'proposisi nilai unik berdasarkan data nyata'}",
+    "competitors": ["direct competitor 1","direct competitor 2","direct competitor 3","direct competitor 4"],
+    "competitor_context": "${isEn ? '1 sentence on competitive positioning vs named competitors' : '1 kalimat posisi kompetitif vs kompetitor yang disebutkan'}",
+    "platforms": ["platform 1","platform 2"],
+    "social_presence": "${isEn ? 'brief note on social media scale' : 'catatan singkat skala media sosial'}",
     "market_maturity": "Emerging/Growing/Mature/Saturated",
     "confidence": "high/medium/low"
   },
   "scores": {
-    "market_fit": {"score": 7, "note": "1 sentence justification based on data"},
-    "digital_presence": {"score": 6, "note": "1 sentence justification based on data"},
-    "differentiation": {"score": 8, "note": "1 sentence justification based on data"},
-    "growth_potential": {"score": 7, "note": "1 sentence justification based on data"}
+    "market_fit": {"score": 7, "note": "${isEn ? '1 sentence justification' : '1 kalimat justifikasi'}"},
+    "digital_presence": {"score": 6, "note": "${isEn ? '1 sentence justification' : '1 kalimat justifikasi'}"},
+    "differentiation": {"score": 8, "note": "${isEn ? '1 sentence justification' : '1 kalimat justifikasi'}"},
+    "growth_potential": {"score": 7, "note": "${isEn ? '1 sentence justification' : '1 kalimat justifikasi'}"}
   },
-  "executive_summary": "3-4 sentence high-level summary of data implications and strategic direction in executive board tone.",
-  "competitive_landscape": "3 sentence analysis of brand position vs competitors and exploitable gaps.",
+  "executive_summary": "${isEn ? '3-4 sentence executive board summary of strategic direction' : '3-4 kalimat ringkasan eksekutif arah strategis untuk board'}",
+  "competitive_landscape": "${isEn ? '3 sentence honest analysis of brand position vs competitors' : '3 kalimat analisis jujur posisi brand vs kompetitor'}",
   "brand_strategy": {
-    "positioning_statement": "For [target audience] who [problem], [brand] is the [category] that [solution] because [proof].",
-    "brand_archetype": "Archetype name",
-    "archetype_rationale": "Data-backed rationale for this archetype.",
-    "messaging_pillars": ["Pillar 1: title — explanation", "Pillar 2: title — explanation", "Pillar 3: title — explanation"],
-    "tone_of_voice": "Formal definition of brand tonality",
-    "tone_approved": "Example of approved brand language",
-    "tone_rejected": "Example of rejected brand language",
-    "visual_direction": "Color psychology and typography direction aligned with archetype"
+    "positioning_statement": "${isEn ? 'For [target] who [problem], [brand] is the [category] that [solution] because [proof].' : 'Untuk [target] yang [masalah], [brand] adalah [kategori] yang [solusi] karena [bukti].'}",
+    "brand_archetype": "${isEn ? 'Archetype name (e.g. The Sage, The Ruler)' : 'Nama arketipe (mis. The Sage, The Ruler)'}",
+    "archetype_rationale": "${isEn ? 'Data-backed rationale for this archetype' : 'Justifikasi berbasis data untuk arketipe ini'}",
+    "messaging_pillars": ["${isEn ? 'Pillar 1: title — explanation' : 'Pilar 1: judul — penjelasan'}", "${isEn ? 'Pillar 2: title — explanation' : 'Pilar 2: judul — penjelasan'}", "${isEn ? 'Pillar 3: title — explanation' : 'Pilar 3: judul — penjelasan'}"],
+    "tone_of_voice": "${isEn ? 'Formal definition of brand tonality' : 'Definisi formal tonalitas brand'}",
+    "tone_approved": "${isEn ? 'Example of approved brand language' : 'Contoh bahasa brand yang disetujui'}",
+    "tone_rejected": "${isEn ? 'Example of rejected brand language' : 'Contoh bahasa brand yang ditolak'}",
+    "visual_direction": "${isEn ? 'Color psychology and typography direction aligned with archetype' : 'Psikologi warna dan arah tipografi sesuai arketipe'}"
   },
   "strategies": [
-    {"title": "strategy name", "why": "1 sentence data-backed rationale", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "primary KPI", "timeframe": "X months"},
-    {"title": "strategy name", "why": "1 sentence data-backed rationale", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "primary KPI", "timeframe": "X months"},
-    {"title": "strategy name", "why": "1 sentence data-backed rationale", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "primary KPI", "timeframe": "X months"}
+    {"title": "${isEn ? 'strategy name' : 'nama strategi'}", "why": "${isEn ? '1 sentence data-backed rationale' : '1 kalimat justifikasi berbasis data'}", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "${isEn ? 'primary KPI' : 'KPI utama'}", "timeframe": "${isEn ? 'X months' : 'X bulan'}"},
+    {"title": "${isEn ? 'strategy name' : 'nama strategi'}", "why": "${isEn ? '1 sentence data-backed rationale' : '1 kalimat justifikasi berbasis data'}", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "${isEn ? 'primary KPI' : 'KPI utama'}", "timeframe": "${isEn ? 'X months' : 'X bulan'}"},
+    {"title": "${isEn ? 'strategy name' : 'nama strategi'}", "why": "${isEn ? '1 sentence data-backed rationale' : '1 kalimat justifikasi berbasis data'}", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "${isEn ? 'primary KPI' : 'KPI utama'}", "timeframe": "${isEn ? 'X months' : 'X bulan'}"}
   ],
   "platform_blueprint": {
-    "primary": "primary platform + rationale",
-    "secondary": "secondary platform + rationale",
+    "primary": "${isEn ? 'primary platform + rationale' : 'platform utama + alasan'}",
+    "secondary": "${isEn ? 'secondary platform + rationale' : 'platform sekunder + alasan'}",
     "content_formats": ["format1","format2","format3"],
-    "posting_frequency": "realistic frequency per platform"
+    "posting_frequency": "${isEn ? 'realistic frequency per platform' : 'frekuensi realistis per platform'}"
   },
   "budget_allocation": [
-    {"category": "Paid Ads", "percent": 35, "note": "rationale"},
-    {"category": "Content Production", "percent": 25, "note": "rationale"},
-    {"category": "KOL/Influencer", "percent": 20, "note": "rationale"},
-    {"category": "Tools & Analytics", "percent": 10, "note": "rationale"},
-    {"category": "Community", "percent": 10, "note": "rationale"}
+    {"category": "${isEn ? 'Paid Ads' : 'Iklan Berbayar'}", "percent": 35, "note": "${isEn ? 'rationale' : 'alasan'}"},
+    {"category": "${isEn ? 'Content Production' : 'Produksi Konten'}", "percent": 25, "note": "${isEn ? 'rationale' : 'alasan'}"},
+    {"category": "KOL/Influencer", "percent": 20, "note": "${isEn ? 'rationale' : 'alasan'}"},
+    {"category": "${isEn ? 'Tools & Analytics' : 'Tools & Analitik'}", "percent": 10, "note": "${isEn ? 'rationale' : 'alasan'}"},
+    {"category": "${isEn ? 'Community' : 'Komunitas'}", "percent": 10, "note": "${isEn ? 'rationale' : 'alasan'}"}
   ],
-  "actionable_recommendations": ["Specific recommendation 1","Specific recommendation 2","Specific recommendation 3","Specific recommendation 4"],
-  "data_gaps": ["Specific missing data point 1","Specific missing data point 2","Specific missing data point 3"],
-  "red_flags": ["flag1","flag2","flag3"]
+  "actionable_recommendations": ["${isEn ? 'Specific recommendation 1' : 'Rekomendasi spesifik 1'}","${isEn ? 'rec 2' : 'rekomendasi 2'}","${isEn ? 'rec 3' : 'rekomendasi 3'}","${isEn ? 'rec 4' : 'rekomendasi 4'}"],
+  "data_gaps": ["${isEn ? 'Missing data point 1' : 'Data yang kurang 1'}","${isEn ? 'gap 2' : 'gap 2'}","${isEn ? 'gap 3' : 'gap 3'}"],
+  "red_flags": ["${isEn ? 'flag 1' : 'flag 1'}","${isEn ? 'flag 2' : 'flag 2'}","${isEn ? 'flag 3' : 'flag 3'}"]
 }`;
 
   try {
