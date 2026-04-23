@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ananta CMO Analyzer</title>
+<link href="https://fonts.googleapis.com/css2?family=Averia+Sans+Libre:ital,wght@0,300;0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c0e;
+  --panel:#111113;
+  --panel2:#161618;
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.1);
+  --text:#ededf0;
+  --text2:#7a7a8a;
+  --text3:#3d3d4a;
+  --accent:#c8f54a;
+  --accent2:#a8d93a;
+  --accent-glow:rgba(200,245,74,0.15);
+  --accent-dim:rgba(200,245,74,0.08);
+  --red:#ff5555;
+  --red-dim:rgba(255,85,85,0.08);
+  --green:#4adf8a;
+  --green-dim:rgba(74,223,138,0.08);
+  --amber:#ffb84a;
+  --amber-dim:rgba(255,184,74,0.08);
+  --r:10px;
+  --r-sm:6px;
+}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Averia Sans Libre',sans-serif;
+  font-size:14px;
+  display:flex;
+  flex-direction:column;
+}
+
+/* TOPBAR */
+.topbar{
+  height:52px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  flex-shrink:0;
+  background:var(--panel);
+}
+.logo{
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:-0.02em;
+  color:var(--text);
+}
+.logo span{color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.status-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--text3);
+  transition:background .3s;
+}
+.status-dot.active{background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.status-text{font-size:11px;color:var(--text2)}
+.topbar-badge{
+  font-size:10px;padding:3px 8px;
+  border:1px solid var(--border2);
+  border-radius:99px;color:var(--text2);
+  letter-spacing:0.05em;
+}
+
+/* MAIN LAYOUT */
+.main{
+  display:flex;
+  flex:1;
+  overflow:hidden;
+}
+
+/* LEFT PANEL - INPUT */
+.left-panel{
+  width:340px;
+  flex-shrink:0;
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--panel);
+}
+.panel-header{
+  padding:16px 20px 12px;
+  border-bottom:1px solid var(--border);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  color:var(--text2);
+  display:flex;align-items:center;gap:6px;
+  flex-shrink:0;
+}
+.panel-header .ph-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--accent);
+}
+.left-scroll{
+  flex:1;
+  overflow-y:auto;
+  padding:16px 20px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border2) transparent;
+}
+
+/* MODE TABS */
+.mode-tabs{
+  display:flex;
+  gap:4px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:3px;
+  margin-bottom:16px;
+}
+.mode-tab{
+  flex:1;padding:6px 8px;
+  font-size:11px;font-weight:700;
+  border:none;background:none;
+  color:var(--text2);cursor:pointer;
+  border-radius:4px;
+  transition:all .15s;
+  font-family:'Averia Sans Libre',sans-serif;
+  letter-spacing:0.02em;
+}
+.mode-tab.active{
+  background:var(--accent);
+  color:#0c0c0e;
+}
+
+/* FORM */
+.field{margin-bottom:12px}
+.field-label{
+  font-size:10px;text-transform:uppercase;
+  letter-spacing:0.08em;color:var(--text2);
+  margin-bottom:5px;display:block;
+}
+.field input,.field textarea,.field select{
+  width:100%;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  color:var(--text);
+  font-family:'Averia Sans Libre',sans-serif;
+  font-size:13px;
+  padding:9px 11px;
+  outline:none;
+  transition:border-color .15s;
+  resize:none;
+}
+.field input:focus,.field textarea:focus{border-color:var(--border2)}
+.field input::placeholder,.field textarea::placeholder{color:var(--text3)}
+.field textarea{min-height:90px}
+
+/* INFO NOTE */
+.info-note{
+  font-size:11px;color:var(--text2);
+  background:var(--accent-dim);
+  border-radius:var(--r-sm);
+  padding:8px 10px;
+  margin-bottom:12px;
+  border-left:2px solid var(--accent);
+  line-height:1.5;
+}
+
+/* SECTION LABEL */
+.section-label{
+  font-size:10px;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text3);
+  margin:16px 0 8px;
+  display:flex;align-items:center;gap:6px;
+}
+.section-label::after{
+  content:'';flex:1;height:1px;
+  background:var(--border);
+}
+
+/* GOALS */
+.goals-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:4px}
+.goal-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text2);
+  cursor:pointer;
+  padding:6px 8px;
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  transition:all .15s;
+  user-select:none;
+}
+.goal-item:hover{border-color:var(--border2);color:var(--text)}
+.goal-item.checked{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.goal-check{
+  width:13px;height:13px;
+  border:1px solid var(--border2);
+  border-radius:3px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;transition:all .15s;
+}
+.goal-item.checked .goal-check{background:var(--accent);border-color:var(--accent);color:#0c0c0e}
+
+/* METRICS */
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.metric-cell{
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:8px 10px;
+}
+.metric-cell label{
+  font-size:10px;text-transform:uppercase;
+  letter-spacing:0.06em;color:var(--text3);
+  display:block;margin-bottom:4px;
+}
+.metric-cell input{
+  width:100%;border:none;background:none;
+  font-size:13px;font-weight:400;
+  color:var(--text);
+  font-family:'Averia Sans Libre',sans-serif;
+  outline:none;padding:0;
+}
+.metric-cell input::placeholder{color:var(--text3)}
+
+/* ANALYZE BUTTON */
+.btn-analyze{
+  width:100%;padding:12px;
+  background:var(--accent);
+  color:#0c0c0e;
+  font-family:'Averia Sans Libre',sans-serif;
+  font-size:13px;font-weight:700;
+  border:none;border-radius:var(--r-sm);
+  cursor:pointer;
+  transition:all .2s;
+  display:flex;align-items:center;
+  justify-content:center;gap:8px;
+  margin-top:16px;
+  letter-spacing:0.02em;
+}
+.btn-analyze:hover{background:var(--accent2)}
+.btn-analyze:disabled{opacity:0.4;cursor:not-allowed}
+.spinner{
+  width:13px;height:13px;
+  border:2px solid rgba(0,0,0,0.2);
+  border-top-color:#0c0c0e;
+  border-radius:50%;
+  animation:spin .6s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err-msg{
+  font-size:11px;color:var(--red);
+  margin-top:8px;padding:7px 10px;
+  background:var(--red-dim);
+  border-radius:var(--r-sm);
+  display:none;
+}
+.err-msg.show{display:block}
+
+/* RIGHT PANEL - RESULTS */
+.right-panel{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--bg);
+}
+
+/* EMPTY STATE */
+.empty-state{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  color:var(--text3);
+}
+.empty-icon{
+  width:56px;height:56px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+  background:var(--panel);
+}
+.empty-title{font-size:15px;font-weight:700;color:var(--text2)}
+.empty-sub{font-size:12px;color:var(--text3);text-align:center;max-width:260px;line-height:1.5}
+
+/* LOADING STATE */
+.loading-state{
+  flex:1;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:14px;
+}
+.loading-ring{
+  width:40px;height:40px;
+  border:2px solid var(--border2);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+.loading-text{font-size:13px;color:var(--text2)}
+.loading-sub{font-size:11px;color:var(--text3)}
+
+/* RESULT CONTENT */
+.result-wrap{
+  flex:1;overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border2) transparent;
+}
+
+/* RESULT TOPBAR */
+.result-topbar{
+  padding:14px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  justify-content:space-between;
+  flex-shrink:0;
+  background:var(--panel);
+}
+.result-brand{font-size:16px;font-weight:700;color:var(--text)}
+.result-brand span{color:var(--accent)}
+.result-meta{font-size:11px;color:var(--text2);margin-top:2px}
+.btn-reset{
+  padding:6px 12px;font-size:11px;
+  border:1px solid var(--border2);
+  background:none;color:var(--text2);
+  border-radius:var(--r-sm);cursor:pointer;
+  font-family:'Averia Sans Libre',sans-serif;
+  transition:all .15s;
+}
+.btn-reset:hover{border-color:var(--accent);color:var(--accent)}
+
+/* RESULT GRID */
+.result-body{padding:20px 24px}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:20px}
+.tag{
+  font-size:10px;padding:3px 8px;
+  border-radius:99px;
+  border:1px solid var(--border);
+  color:var(--text2);
+}
+.tag.hi{border-color:var(--green);color:var(--green);background:var(--green-dim)}
+.tag.med{border-color:var(--amber);color:var(--amber);background:var(--amber-dim)}
+.tag.lo{border-color:var(--red);color:var(--red);background:var(--red-dim)}
+
+/* INTEL GRID */
+.intel-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  margin-bottom:20px;
+}
+.intel-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:12px 14px;
+}
+.intel-card.span2{grid-column:span 2}
+.intel-card.span3{grid-column:span 3}
+.ic-label{
+  font-size:10px;text-transform:uppercase;
+  letter-spacing:0.08em;color:var(--text3);
+  margin-bottom:5px;
+}
+.ic-val{font-size:12px;color:var(--text);line-height:1.5}
+.ic-val.big{font-size:22px;font-weight:700;color:var(--accent)}
+
+/* SCORE ROW */
+.score-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:8px;margin-bottom:20px;
+}
+.score-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:12px 14px;
+}
+.sc-name{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--text2);margin-bottom:8px}
+.sc-num{font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px}
+.sc-bar{height:3px;background:var(--panel2);border-radius:2px;margin-bottom:5px}
+.sc-fill{height:3px;border-radius:2px;background:var(--accent);transition:width 1s cubic-bezier(.4,0,.2,1)}
+.sc-note{font-size:10px;color:var(--text3);line-height:1.4}
+
+/* SECTION */
+.section{margin-bottom:20px}
+.section-head{
+  font-size:11px;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--text2);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-head::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* STRATEGY CARDS */
+.strategy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.strat-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+}
+.strat-num{
+  font-size:10px;color:var(--accent);
+  font-weight:700;margin-bottom:6px;
+  font-family:'DM Mono',monospace;
+}
+.strat-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3}
+.strat-why{font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.5}
+.strat-tactics{list-style:none;margin-bottom:10px}
+.strat-tactics li{
+  font-size:11px;color:var(--text2);
+  padding:4px 0;
+  border-bottom:1px solid var(--border);
+  line-height:1.4;
+  display:flex;gap:6px;
+}
+.strat-tactics li:last-child{border:none}
+.strat-tactics li::before{content:'→';color:var(--accent);flex-shrink:0;font-size:10px;margin-top:1px}
+.strat-meta{display:flex;gap:6px;flex-wrap:wrap}
+.strat-badge{
+  font-size:10px;padding:2px 7px;
+  border-radius:99px;
+  border:1px solid var(--border);
+  color:var(--text3);
+  font-family:'DM Mono',monospace;
+}
+
+/* PLATFORM */
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.platform-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+}
+.platform-tag{
+  display:inline-flex;font-size:10px;
+  padding:2px 8px;border-radius:99px;
+  margin-bottom:8px;font-weight:700;
+}
+.platform-tag.primary{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent)}
+.platform-tag.secondary{background:var(--panel2);color:var(--text2);border:1px solid var(--border)}
+.platform-val{font-size:12px;color:var(--text);line-height:1.5}
+
+/* BUDGET BARS */
+.budget-list{display:flex;flex-direction:column;gap:8px}
+.budget-item{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px 16px;
+}
+.budget-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.budget-name{font-size:12px;color:var(--text)}
+.budget-pct{font-size:14px;font-weight:700;color:var(--accent);font-family:'DM Mono',monospace}
+.budget-bar-bg{height:3px;background:var(--panel2);border-radius:2px;margin-bottom:5px}
+.budget-bar-fill{height:3px;border-radius:2px;background:var(--accent);transition:width 1s cubic-bezier(.4,0,.2,1)}
+.budget-note{font-size:10px;color:var(--text3)}
+
+/* QUICK WINS */
+.qw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qw-item{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px 14px;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.qw-num{
+  min-width:20px;height:20px;
+  border-radius:5px;
+  background:var(--accent-dim);
+  color:var(--accent);
+  font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-family:'DM Mono',monospace;
+}
+.qw-text{font-size:11px;color:var(--text2);line-height:1.5}
+
+/* RED FLAGS */
+.flag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.flag-card{
+  background:var(--red-dim);
+  border:1px solid rgba(255,85,85,0.15);
+  border-radius:var(--r);padding:12px 14px;
+  font-size:11px;color:var(--text2);line-height:1.5;
+}
+.flag-icon{color:var(--red);font-size:13px;margin-bottom:5px}
+
+/* COMPETITIVE */
+.comp-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+  font-size:12px;color:var(--text2);line-height:1.7;
+}
+
+@media(max-width:900px){
+  html,body{height:auto;overflow:auto}
+  .main{flex-direction:column}
+  .left-panel{width:100%;border-right:none;border-bottom:1px solid var(--border)}
+  .right-panel{min-height:600px}
+  .intel-grid{grid-template-columns:1fr 1fr}
+  .intel-card.span3{grid-column:span 2}
+  .score-grid{grid-template-columns:1fr 1fr}
+  .strategy-grid{grid-template-columns:1fr}
+  .flag-grid{grid-template-columns:1fr}
+  html,body{overflow:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">Ananta <span>CMO</span> Analyzer</div>
+  <div class="topbar-right">
+    <div class="status-dot" id="status-dot"></div>
+    <div class="status-text" id="status-text">Ready</div>
+    <div class="topbar-badge">Powered by Claude</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="panel-header"><span class="ph-dot"></span>Brand Input</div>
+    <div class="left-scroll">
+
+      <!-- MODE TABS -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="mt-name" onclick="setMode('name')">Brand Name</button>
+        <button class="mode-tab" id="mt-url" onclick="setMode('url')">Website</button>
+        <button class="mode-tab" id="mt-profile" onclick="setMode('profile')">Profile</button>
+      </div>
+
+      <!-- NAME -->
+      <div id="p-name">
+        <div class="info-note">AI infer semua data otomatis dari nama brand.</div>
+        <div class="field">
+          <label class="field-label">Nama Brand</label>
+          <input id="n-brand" type="text" placeholder="Somethinc, Kopi Kenangan..."/>
+        </div>
+      </div>
+
+      <!-- URL -->
+      <div id="p-url" style="display:none">
+        <div class="info-note">AI baca konten website dan extract info brand.</div>
+        <div class="field">
+          <label class="field-label">URL Website</label>
+          <input id="n-url" type="text" placeholder="https://brandkamu.com"/>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div id="p-profile" style="display:none">
+        <div class="info-note">Paste bio IG, about us, atau deskripsi brand.</div>
+        <div class="field">
+          <label class="field-label">Company Profile / Bio</label>
+          <textarea id="n-profile" placeholder="Paste teks deskripsi brand di sini..."></textarea>
+        </div>
+      </div>
+
+      <!-- GOALS -->
+      <div class="section-label">Tujuan Strategi</div>
+      <div class="goals-grid">
+        <div class="goal-item" onclick="toggleGoal(this)" data-val="Brand Awareness"><div class="goal-check"></div>Awareness</div>
+        <div class="goal-item" onclick="toggleGoal(this)" data-val="Lead Generation"><div class="goal-check"></div>Lead Gen</div>
+        <div class="goal-item checked" onclick="toggleGoal(this)" data-val="Sales Conversion"><div class="goal-check">✓</div>Sales</div>
+        <div class="goal-item" onclick="toggleGoal(this)" data-val="Customer Retention"><div class="goal-check"></div>Retention</div>
+        <div class="goal-item" onclick="toggleGoal(this)" data-val="Community Building"><div class="goal-check"></div>Community</div>
+        <div class="goal-item" onclick="toggleGoal(this)" data-val="Market Expansion"><div class="goal-check"></div>Expansion</div>
+      </div>
+
+      <!-- METRICS -->
+      <div class="section-label">Data Tambahan</div>
+      <div class="metrics-grid">
+        <div class="metric-cell"><label>Budget/mo</label><input id="x-budget" type="text" placeholder="Rp..."/></div>
+        <div class="metric-cell"><label>Revenue/mo</label><input id="x-rev" type="text" placeholder="Rp..."/></div>
+        <div class="metric-cell"><label>IG Followers</label><input id="x-igf" type="text" placeholder="0"/></div>
+        <div class="metric-cell"><label>IG ER %</label><input id="x-iger" type="text" placeholder="%"/></div>
+        <div class="metric-cell"><label>TikTok Flw</label><input id="x-tktf" type="text" placeholder="0"/></div>
+        <div class="metric-cell"><label>Pain Points</label><input id="x-pain" type="text" placeholder="Singkat..."/></div>
+      </div>
+
+      <button class="btn-analyze" id="analyze-btn" onclick="runAnalysis()">
+        <span id="btn-icon">⚡</span>
+        <span id="btn-txt">Analyze Brand</span>
+      </button>
+      <div class="err-msg" id="err-msg"></div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- EMPTY -->
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">🎯</div>
+      <div class="empty-title">Ananta CMO Analyzer</div>
+      <div class="empty-sub">Masukkan data brand di panel kiri, klik Analyze Brand untuk generate strategi marketing.</div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading-state" id="loading-state" style="display:none">
+      <div class="loading-ring"></div>
+      <div class="loading-text">Menganalisis brand...</div>
+      <div class="loading-sub">Extract data → Competitive analysis → Strategy</div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="result-state" style="display:none;flex:1;display:none;flex-direction:column;overflow:hidden">
+      <div class="result-topbar">
+        <div>
+          <div class="result-brand" id="res-name"></div>
+          <div class="result-meta" id="res-meta"></div>
+        </div>
+        <button class="btn-reset" onclick="resetAll()">← Reset</button>
+      </div>
+      <div class="result-wrap">
+        <div class="result-body" id="res-body"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let mode = 'name';
+
+function setMode(m) {
+  mode = m;
+  ['name','url','profile'].forEach(x => {
+    document.getElementById('mt-'+x).classList.toggle('active', x===m);
+    document.getElementById('p-'+x).style.display = x===m ? 'block' : 'none';
+  });
+}
+
+function toggleGoal(el) {
+  el.classList.toggle('checked');
+  el.querySelector('.goal-check').textContent = el.classList.contains('checked') ? '✓' : '';
+}
+
+function getGoals() {
+  return [...document.querySelectorAll('.goal-item.checked')].map(e=>e.dataset.val).join(', ') || 'Sales Conversion';
+}
+
+function v(id){ return (document.getElementById(id)?.value||'').trim(); }
+
+function setStatus(state) {
+  const dot = document.getElementById('status-dot');
+  const txt = document.getElementById('status-text');
+  if(state==='analyzing'){ dot.classList.add('active'); txt.textContent='Analyzing...'; }
+  else { dot.classList.remove('active'); txt.textContent='Ready'; }
+}
+
+function showPanel(name) {
+  document.getElementById('empty-state').style.display = name==='empty' ? 'flex' : 'none';
+  document.getElementById('loading-state').style.display = name==='loading' ? 'flex' : 'none';
+  const rs = document.getElementById('result-state');
+  if(name==='result'){ rs.style.display='flex'; rs.style.flexDirection='column'; }
+  else rs.style.display='none';
+}
+
+async function runAnalysis() {
+  const errEl = document.getElementById('err-msg');
+  errEl.classList.remove('show');
+
+  let inputSection = '';
+  if(mode==='name'){
+    const val = v('n-brand');
+    if(!val){ errEl.textContent='Masukkan nama brand!'; errEl.classList.add('show'); return; }
+    inputSection = `MODE: Brand Name\nNAMA BRAND: "${val}"`;
+  } else if(mode==='url'){
+    const val = v('n-url');
+    if(!val){ errEl.textContent='Masukkan URL!'; errEl.classList.add('show'); return; }
+    inputSection = `MODE: URL\nURL: ${val}`;
+  } else {
+    const val = v('n-profile');
+    if(!val){ errEl.textContent='Paste company profile!'; errEl.classList.add('show'); return; }
+    inputSection = `MODE: Profile\nTEKS:\n"""\n${val}\n"""`;
+  }
+
+  const extras = [
+    v('x-budget') ? `Budget/mo: ${v('x-budget')}` : null,
+    v('x-rev')    ? `Revenue/mo: ${v('x-rev')}` : null,
+    v('x-igf')    ? `IG Followers: ${v('x-igf')}` : null,
+    v('x-iger')   ? `IG ER: ${v('x-iger')}%` : null,
+    v('x-tktf')   ? `TikTok: ${v('x-tktf')}` : null,
+    v('x-pain')   ? `Pain: ${v('x-pain')}` : null,
+  ].filter(Boolean).join(', ');
+
+  const btn = document.getElementById('analyze-btn');
+  btn.disabled = true;
+  document.getElementById('btn-icon').outerHTML = '<span id="btn-icon" class="spinner"></span>';
+  document.getElementById('btn-txt').textContent = 'Analyzing...';
+  setStatus('analyzing');
+  showPanel('loading');
+
+  const prompt = `Analisis brand berikut. Respond HANYA dengan JSON valid, tanpa markdown, tanpa backtick.
+
+${inputSection}
+GOALS: ${getGoals()}
+${extras ? 'DATA: '+extras : ''}
+
+JSON format:
+{
+  "brand": {
+    "name": "nama brand",
+    "industry": "industri",
+    "sub_category": "sub kategori",
+    "target_age": "usia target",
+    "target_gender": "All/Female/Male",
+    "market_reach": "Lokal/Regional/Nasional/Global",
+    "price_positioning": "Budget/Mid-range/Premium/Luxury",
+    "brand_voice": "tone brand",
+    "core_products": "produk utama max 1 kalimat",
+    "usp": "USP singkat",
+    "competitors": ["k1","k2","k3"],
+    "platforms": ["p1","p2"],
+    "market_maturity": "Emerging/Growing/Mature/Saturated",
+    "confidence": "high/medium/low"
+  },
+  "scores": {
+    "market_fit": {"score": 7, "note": "1 kalimat"},
+    "digital_presence": {"score": 6, "note": "1 kalimat"},
+    "differentiation": {"score": 8, "note": "1 kalimat"},
+    "growth_potential": {"score": 7, "note": "1 kalimat"}
+  },
+  "competitive_landscape": "3 kalimat analisis posisi vs kompetitor",
+  "strategies": [
+    {"title": "nama", "why": "alasan 1 kalimat", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "kpi utama", "timeframe": "X bulan"},
+    {"title": "nama", "why": "alasan 1 kalimat", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "kpi utama", "timeframe": "X bulan"},
+    {"title": "nama", "why": "alasan 1 kalimat", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "kpi utama", "timeframe": "X bulan"}
+  ],
+  "platform_blueprint": {
+    "primary": "platform + alasan singkat",
+    "secondary": "platform + alasan singkat",
+    "content_formats": ["format1","format2","format3"],
+    "posting_frequency": "frekuensi"
+  },
+  "budget_allocation": [
+    {"category": "Paid Ads", "percent": 35, "note": "alasan singkat"},
+    {"category": "Content", "percent": 25, "note": "alasan singkat"},
+    {"category": "KOL/Influencer", "percent": 20, "note": "alasan singkat"},
+    {"category": "Tools", "percent": 10, "note": "alasan singkat"},
+    {"category": "Community", "percent": 10, "note": "alasan singkat"}
+  ],
+  "quick_wins": ["aksi1","aksi2","aksi3","aksi4","aksi5"],
+  "red_flags": ["flag1","flag2","flag3"]
+}`;
+
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 2000,
+        system: 'Kamu adalah konsultan marketing spesialis pasar Indonesia. Respond HANYA dengan JSON valid, tanpa markdown, tanpa backtick.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error?.message || `Error ${res.status}`);
+
+    let raw = data.content?.map(b=>b.text||'').join('')||'';
+    raw = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(raw);
+    renderResult(parsed);
+
+  } catch(e) {
+    showPanel('empty');
+    errEl.textContent = 'Error: ' + e.message;
+    errEl.classList.add('show');
+  }
+
+  btn.disabled = false;
+  document.getElementById('btn-icon').outerHTML = '<span id="btn-icon">⚡</span>';
+  document.getElementById('btn-txt').textContent = 'Analyze Brand';
+  setStatus('ready');
+}
+
+function renderResult(d) {
+  const b = d.brand;
+  document.getElementById('res-name').innerHTML = `${b.name} <span>Analysis</span>`;
+  document.getElementById('res-meta').textContent = `${b.industry} · ${b.market_reach} · ${b.price_positioning}`;
+
+  const confClass = b.confidence==='high' ? 'hi' : b.confidence==='medium' ? 'med' : 'lo';
+  const tags = [b.industry, b.target_age, b.price_positioning, b.market_maturity].filter(Boolean);
+  
+  let html = '';
+
+  // TAGS
+  html += `<div class="tag-row">
+    <span class="tag ${confClass}">Confidence: ${b.confidence}</span>
+    ${tags.map(t=>`<span class="tag">${t}</span>`).join('')}
+  </div>`;
+
+  // INTEL GRID
+  html += `<div class="intel-grid">
+    <div class="intel-card"><div class="ic-label">Industri</div><div class="ic-val">${b.industry}${b.sub_category?' › '+b.sub_category:''}</div></div>
+    <div class="intel-card"><div class="ic-label">Target</div><div class="ic-val">${b.target_age} · ${b.target_gender}</div></div>
+    <div class="intel-card"><div class="ic-label">Positioning</div><div class="ic-val">${b.price_positioning}</div></div>
+    <div class="intel-card span2"><div class="ic-label">Kompetitor</div><div class="ic-val">${(b.competitors||[]).join(' · ')}</div></div>
+    <div class="intel-card"><div class="ic-label">Platform</div><div class="ic-val">${(b.platforms||[]).join(', ')}</div></div>
+    <div class="intel-card span3"><div class="ic-label">USP</div><div class="ic-val">${b.usp}</div></div>
+  </div>`;
+
+  // SCORES
+  if(d.scores) {
+    const sc = [
+      {k:'market_fit',l:'Market Fit'},
+      {k:'digital_presence',l:'Digital'},
+      {k:'differentiation',l:'Diff.'},
+      {k:'growth_potential',l:'Growth'}
+    ];
+    html += `<div class="score-grid">`;
+    sc.forEach(s => {
+      const score = d.scores[s.k]||{};
+      html += `<div class="score-card">
+        <div class="sc-name">${s.l}</div>
+        <div class="sc-num">${score.score||'—'}<span style="font-size:12px;color:var(--text3)">/10</span></div>
+        <div class="sc-bar"><div class="sc-fill" style="width:${(score.score||0)*10}%"></div></div>
+        <div class="sc-note">${score.note||''}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // COMPETITIVE
+  if(d.competitive_landscape) {
+    html += `<div class="section"><div class="section-head">Competitive Landscape</div>
+    <div class="comp-card">${d.competitive_landscape}</div></div>`;
+  }
+
+  // STRATEGIES
+  if(d.strategies?.length) {
+    html += `<div class="section"><div class="section-head">Top ${d.strategies.length} Strategi</div>
+    <div class="strategy-grid">`;
+    d.strategies.forEach((s,i) => {
+      html += `<div class="strat-card">
+        <div class="strat-num">0${i+1}</div>
+        <div class="strat-title">${s.title}</div>
+        <div class="strat-why">${s.why}</div>
+        <ul class="strat-tactics">${(s.tactics||[]).map(t=>`<li>${t}</li>`).join('')}</ul>
+        <div class="strat-meta">
+          <span class="strat-badge">${s.kpi}</span>
+          <span class="strat-badge">${s.timeframe}</span>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // PLATFORM
+  if(d.platform_blueprint) {
+    const pb = d.platform_blueprint;
+    html += `<div class="section"><div class="section-head">Platform & Content Blueprint</div>
+    <div class="platform-grid">
+      <div class="platform-card">
+        <span class="platform-tag primary">Primary</span>
+        <div class="platform-val">${pb.primary}</div>
+      </div>
+      <div class="platform-card">
+        <span class="platform-tag secondary">Secondary</span>
+        <div class="platform-val">${pb.secondary}</div>
+      </div>
+    </div>
+    <div style="margin-top:8px;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px">
+      <div class="ic-label" style="margin-bottom:8px">Content Formats · ${pb.posting_frequency}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">${(pb.content_formats||[]).map(f=>`<span style="font-size:11px;color:var(--text2);background:var(--panel2);border:1px solid var(--border);border-radius:5px;padding:4px 9px">${f}</span>`).join('')}</div>
+    </div></div>`;
+  }
+
+  // BUDGET
+  if(d.budget_allocation?.length) {
+    html += `<div class="section"><div class="section-head">Budget Allocation</div>
+    <div class="budget-list">`;
+    d.budget_allocation.forEach(ba => {
+      html += `<div class="budget-item">
+        <div class="budget-row"><span class="budget-name">${ba.category}</span><span class="budget-pct">${ba.percent}%</span></div>
+        <div class="budget-bar-bg"><div class="budget-bar-fill" style="width:${ba.percent}%"></div></div>
+        <div class="budget-note">${ba.note}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // QUICK WINS + RED FLAGS side by side
+  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">`;
+
+  if(d.quick_wins?.length) {
+    html += `<div class="section"><div class="section-head">Quick Wins 30 Hari</div>
+    <div style="display:flex;flex-direction:column;gap:6px">`;
+    d.quick_wins.forEach((w,i) => {
+      html += `<div class="qw-item"><div class="qw-num">${i+1}</div><div class="qw-text">${w}</div></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  if(d.red_flags?.length) {
+    html += `<div class="section"><div class="section-head">Red Flags</div>
+    <div style="display:flex;flex-direction:column;gap:6px">`;
+    d.red_flags.forEach(f => {
+      html += `<div class="flag-card"><div class="flag-icon">⚠</div>${f}</div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  html += `</div>`;
+
+  document.getElementById('res-body').innerHTML = html;
+  showPanel('result');
+
+  setTimeout(() => {
+    document.querySelectorAll('.sc-fill, .budget-bar-fill').forEach(el => {
+      const w = el.style.width; el.style.width='0%';
+      setTimeout(() => el.style.width=w, 100);
+    });
+  }, 100);
+}
+
+function resetAll() {
+  showPanel('empty');
+  setStatus('ready');
+  document.getElementById('res-body').innerHTML='';
+}
+</script>
+</body>
+</html>
