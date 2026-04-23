@@ -76,7 +76,7 @@ body{
 .main{
   display:flex;
   flex:1;
-  overflow:hidden;
+  min-height:0;
 }
 
 /* LEFT PANEL - INPUT */
@@ -86,7 +86,6 @@ body{
   border-right:1px solid var(--border);
   display:flex;
   flex-direction:column;
-  overflow:hidden;
   background:var(--panel);
 }
 .panel-header{
@@ -194,9 +193,16 @@ body{
   border-radius:var(--r-sm);
   transition:all .15s;
   user-select:none;
+  background:none;
+  width:100%;
+  text-align:left;
+  font-family:inherit;
+  -webkit-appearance:none;
+  appearance:none;
+  outline:none;
 }
 .goal-item:hover{border-color:var(--border2);color:var(--text)}
-.goal-item.checked{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.goal-item.on{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 .goal-check{
   width:13px;height:13px;
   border:1px solid var(--border2);
@@ -204,7 +210,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   font-size:9px;transition:all .15s;
 }
-.goal-item.checked .goal-check{background:var(--accent);border-color:var(--accent);color:#0c0c0e}
+.goal-item.on .goal-check{background:var(--accent);border-color:var(--accent);color:#0c0c0e}
 
 /* METRICS */
 .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -567,13 +573,13 @@ body{
 
       <!-- GOALS -->
       <div class="section-label">Tujuan Strategi</div>
-      <div class="goals-grid">
-        <div class="goal-item" onclick="toggleGoal(this)" data-val="Brand Awareness"><div class="goal-check"></div>Awareness</div>
-        <div class="goal-item" onclick="toggleGoal(this)" data-val="Lead Generation"><div class="goal-check"></div>Lead Gen</div>
-        <div class="goal-item checked" onclick="toggleGoal(this)" data-val="Sales Conversion"><div class="goal-check">✓</div>Sales</div>
-        <div class="goal-item" onclick="toggleGoal(this)" data-val="Customer Retention"><div class="goal-check"></div>Retention</div>
-        <div class="goal-item" onclick="toggleGoal(this)" data-val="Community Building"><div class="goal-check"></div>Community</div>
-        <div class="goal-item" onclick="toggleGoal(this)" data-val="Market Expansion"><div class="goal-check"></div>Expansion</div>
+      <div class="goals-grid" id="goals-grid">
+        <button type="button" class="goal-item" data-val="Brand Awareness"><div class="goal-check"></div>Awareness</button>
+        <button type="button" class="goal-item" data-val="Lead Generation"><div class="goal-check"></div>Lead Gen</button>
+        <button type="button" class="goal-item on" data-val="Sales Conversion"><div class="goal-check">✓</div>Sales</button>
+        <button type="button" class="goal-item" data-val="Customer Retention"><div class="goal-check"></div>Retention</button>
+        <button type="button" class="goal-item" data-val="Community Building"><div class="goal-check"></div>Community</button>
+        <button type="button" class="goal-item" data-val="Market Expansion"><div class="goal-check"></div>Expansion</button>
       </div>
 
       <!-- METRICS -->
@@ -647,7 +653,8 @@ function toggleGoal(el) {
 }
 
 function getGoals() {
-  return [...document.querySelectorAll('.goal-item.checked')].map(e=>e.dataset.val).join(', ') || 'Sales Conversion';
+  const vals = [...document.querySelectorAll('#goals-grid .goal-item.on')].map(e=>e.dataset.val);
+  return vals.length ? vals.join(', ') : 'Sales Conversion';
 }
 
 function v(id){ return (document.getElementById(id)?.value||'').trim(); }
@@ -675,7 +682,7 @@ async function runAnalysis() {
   if(mode==='name'){
     const val = v('n-brand');
     if(!val){ errEl.textContent='Masukkan nama brand!'; errEl.classList.add('show'); return; }
-    inputSection = `MODE: Brand Name\nNAMA BRAND: "${val}"\n\nLakukan web search untuk mencari informasi terkini tentang brand ini di Indonesia. Cari produk, target market, platform sosmed, kompetitor langsung, dan positioning mereka yang sesungguhnya. Jangan berasumsi — cari data nyatanya dulu.`;
+    inputSection = `MODE: Brand Name\nNAMA BRAND: "${val}"`;
   } else if(mode==='url'){
     const val = v('n-url');
     if(!val){ errEl.textContent='Masukkan URL!'; errEl.classList.add('show'); return; }
@@ -762,11 +769,7 @@ JSON format:
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 2000,
-        system: 'Kamu adalah konsultan marketing strategis spesialis pasar Indonesia dengan akses web search real-time. 
-
-PENTING: Gunakan web search untuk mencari informasi terkini tentang brand yang dianalisis SEBELUM membuat kesimpulan. Cari: nama brand + Indonesia, produk/layanan, target market, kompetitor, positioning, sosmed mereka.
-
-Setelah dapat data real dari pencarian, respond HANYA dengan JSON valid, tanpa markdown, tanpa backtick. Analisis harus AKURAT dan KONTEKSTUAL berdasarkan data nyata brand tersebut, bukan asumsi generik.',
+        system: 'Kamu adalah konsultan marketing spesialis pasar Indonesia. Respond HANYA dengan JSON valid, tanpa markdown, tanpa backtick.',
         messages: [{ role: 'user', content: prompt }]
       })
     });
@@ -936,6 +939,21 @@ function resetAll() {
   setStatus('ready');
   document.getElementById('res-body').innerHTML='';
 }
+
+// Event delegation for goals grid
+document.addEventListener('DOMContentLoaded', function() {
+  var grid = document.getElementById('goals-grid');
+  if(grid) {
+    grid.addEventListener('click', function(e) {
+      var btn = e.target.closest('.goal-item');
+      if(btn) {
+        btn.classList.toggle('on');
+        var chk = btn.querySelector('.goal-check');
+        if(chk) chk.textContent = btn.classList.contains('on') ? '✓' : '';
+      }
+    });
+  }
+});
 </script>
 </body>
 </html>
