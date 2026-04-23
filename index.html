@@ -675,7 +675,7 @@ async function runAnalysis() {
   if(mode==='name'){
     const val = v('n-brand');
     if(!val){ errEl.textContent='Masukkan nama brand!'; errEl.classList.add('show'); return; }
-    inputSection = `MODE: Brand Name\nNAMA BRAND: "${val}"`;
+    inputSection = `MODE: Brand Name\nNAMA BRAND: "${val}"\n\nLakukan web search untuk mencari informasi terkini tentang brand ini di Indonesia. Cari produk, target market, platform sosmed, kompetitor langsung, dan positioning mereka yang sesungguhnya. Jangan berasumsi — cari data nyatanya dulu.`;
   } else if(mode==='url'){
     const val = v('n-url');
     if(!val){ errEl.textContent='Masukkan URL!'; errEl.classList.add('show'); return; }
@@ -762,7 +762,11 @@ JSON format:
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 2000,
-        system: 'Kamu adalah konsultan marketing spesialis pasar Indonesia. Respond HANYA dengan JSON valid, tanpa markdown, tanpa backtick.',
+        system: 'Kamu adalah konsultan marketing strategis spesialis pasar Indonesia dengan akses web search real-time. 
+
+PENTING: Gunakan web search untuk mencari informasi terkini tentang brand yang dianalisis SEBELUM membuat kesimpulan. Cari: nama brand + Indonesia, produk/layanan, target market, kompetitor, positioning, sosmed mereka.
+
+Setelah dapat data real dari pencarian, respond HANYA dengan JSON valid, tanpa markdown, tanpa backtick. Analisis harus AKURAT dan KONTEKSTUAL berdasarkan data nyata brand tersebut, bukan asumsi generik.',
         messages: [{ role: 'user', content: prompt }]
       })
     });
