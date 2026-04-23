@@ -769,7 +769,7 @@ JSON format:
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 2000,
-        system: 'Kamu adalah konsultan marketing spesialis pasar Indonesia. Respond HANYA dengan JSON valid, tanpa markdown, tanpa backtick.',
+        system: 'Kamu adalah konsultan marketing strategis spesialis pasar Indonesia. Gunakan web search untuk riset brand. Output HANYA JSON valid dimulai dari { dan diakhiri }. DILARANG menulis teks apapun di luar JSON.',
         messages: [{ role: 'user', content: prompt }]
       })
     });
@@ -779,7 +779,10 @@ JSON format:
 
     let raw = data.content?.map(b=>b.text||'').join('')||'';
     raw = raw.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(raw);
+    // Extract JSON if there's text before/after
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON found in response');
+    const parsed = JSON.parse(jsonMatch[0]);
     renderResult(parsed);
 
   } catch(e) {
