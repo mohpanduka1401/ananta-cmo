@@ -879,22 +879,22 @@ Respond with this exact JSON structure (all text values in ${isEn ? 'English' : 
     "differentiation": {"score": 8, "note": "${isEn ? '1 sentence justification' : '1 kalimat justifikasi'}"},
     "growth_potential": {"score": 7, "note": "${isEn ? '1 sentence justification' : '1 kalimat justifikasi'}"}
   },
-  "executive_summary": "${isEn ? '3-4 sentence executive board summary of strategic direction' : '3-4 kalimat ringkasan eksekutif arah strategis untuk board'}",
-  "competitive_landscape": "${isEn ? '3 sentence honest analysis of brand position vs competitors' : '3 kalimat analisis jujur posisi brand vs kompetitor'}",
+  "executive_summary": "string",
+  "competitive_landscape": "string",
   "brand_strategy": {
-    "positioning_statement": "${isEn ? 'For [target] who [problem], [brand] is the [category] that [solution] because [proof].' : 'Untuk [target] yang [masalah], [brand] adalah [kategori] yang [solusi] karena [bukti].'}",
-    "brand_archetype": "${isEn ? 'Archetype name (e.g. The Sage, The Ruler)' : 'Nama arketipe (mis. The Sage, The Ruler)'}",
-    "archetype_rationale": "${isEn ? 'Data-backed rationale for this archetype' : 'Justifikasi berbasis data untuk arketipe ini'}",
-    "messaging_pillars": ["${isEn ? 'Pillar 1: title — explanation' : 'Pilar 1: judul — penjelasan'}", "${isEn ? 'Pillar 2: title — explanation' : 'Pilar 2: judul — penjelasan'}", "${isEn ? 'Pillar 3: title — explanation' : 'Pilar 3: judul — penjelasan'}"],
-    "tone_of_voice": "${isEn ? 'Formal definition of brand tonality' : 'Definisi formal tonalitas brand'}",
-    "tone_approved": "${isEn ? 'Example of approved brand language' : 'Contoh bahasa brand yang disetujui'}",
-    "tone_rejected": "${isEn ? 'Example of rejected brand language' : 'Contoh bahasa brand yang ditolak'}",
-    "visual_direction": "${isEn ? 'Color psychology and typography direction aligned with archetype' : 'Psikologi warna dan arah tipografi sesuai arketipe'}"
+    "positioning_statement": "string",
+    "brand_archetype": "string",
+    "archetype_rationale": "string",
+    "messaging_pillars": ["string","string","string"],
+    "tone_of_voice": "string",
+    "tone_approved": "string",
+    "tone_rejected": "string",
+    "visual_direction": "string"
   },
   "strategies": [
-    {"title": "${isEn ? 'strategy name' : 'nama strategi'}", "why": "${isEn ? '1 sentence data-backed rationale' : '1 kalimat justifikasi berbasis data'}", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "${isEn ? 'primary KPI' : 'KPI utama'}", "timeframe": "${isEn ? 'X months' : 'X bulan'}"},
-    {"title": "${isEn ? 'strategy name' : 'nama strategi'}", "why": "${isEn ? '1 sentence data-backed rationale' : '1 kalimat justifikasi berbasis data'}", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "${isEn ? 'primary KPI' : 'KPI utama'}", "timeframe": "${isEn ? 'X months' : 'X bulan'}"},
-    {"title": "${isEn ? 'strategy name' : 'nama strategi'}", "why": "${isEn ? '1 sentence data-backed rationale' : '1 kalimat justifikasi berbasis data'}", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "${isEn ? 'primary KPI' : 'KPI utama'}", "timeframe": "${isEn ? 'X months' : 'X bulan'}"}
+    {"title": "string", "why": "string", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "string", "timeframe": "string"},
+    {"title": "string", "why": "string", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "string", "timeframe": "string"},
+    {"title": "string", "why": "string", "tactics": ["t1","t2","t3","t4","t5"], "kpi": "string", "timeframe": "string"}
   ],
   "platform_blueprint": {
     "primary": "${isEn ? 'primary platform + rationale' : 'platform utama + alasan'}",
@@ -903,15 +903,15 @@ Respond with this exact JSON structure (all text values in ${isEn ? 'English' : 
     "posting_frequency": "${isEn ? 'realistic frequency per platform' : 'frekuensi realistis per platform'}"
   },
   "budget_allocation": [
-    {"category": "${isEn ? 'Paid Ads' : 'Iklan Berbayar'}", "percent": 35, "note": "${isEn ? 'rationale' : 'alasan'}"},
-    {"category": "${isEn ? 'Content Production' : 'Produksi Konten'}", "percent": 25, "note": "${isEn ? 'rationale' : 'alasan'}"},
-    {"category": "KOL/Influencer", "percent": 20, "note": "${isEn ? 'rationale' : 'alasan'}"},
-    {"category": "${isEn ? 'Tools & Analytics' : 'Tools & Analitik'}", "percent": 10, "note": "${isEn ? 'rationale' : 'alasan'}"},
-    {"category": "${isEn ? 'Community' : 'Komunitas'}", "percent": 10, "note": "${isEn ? 'rationale' : 'alasan'}"}
+    {"category": "string", "percent": 35, "note": "string"},
+    {"category": "string", "percent": 25, "note": "string"},
+    {"category": "string", "percent": 20, "note": "string"},
+    {"category": "string", "percent": 10, "note": "string"},
+    {"category": "string", "percent": 10, "note": "string"}
   ],
-  "actionable_recommendations": ["${isEn ? 'Specific recommendation 1' : 'Rekomendasi spesifik 1'}","${isEn ? 'rec 2' : 'rekomendasi 2'}","${isEn ? 'rec 3' : 'rekomendasi 3'}","${isEn ? 'rec 4' : 'rekomendasi 4'}"],
-  "data_gaps": ["${isEn ? 'Missing data point 1' : 'Data yang kurang 1'}","${isEn ? 'gap 2' : 'gap 2'}","${isEn ? 'gap 3' : 'gap 3'}"],
-  "red_flags": ["${isEn ? 'flag 1' : 'flag 1'}","${isEn ? 'flag 2' : 'flag 2'}","${isEn ? 'flag 3' : 'flag 3'}"]
+  "actionable_recommendations": ["string","string","string","string"],
+  "data_gaps": ["string","string","string"],
+  "red_flags": ["string","string","string"]
 }`;
 
   try {
@@ -919,7 +919,7 @@ Respond with this exact JSON structure (all text values in ${isEn ? 'English' : 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-opus-4-5',
+        model: 'claude-sonnet-4-5',
         max_tokens: 2000,
         system: 'You are a seasoned Chief Marketing Officer (CMO), elite marketing data analyst, and brand strategist. Your objective is to analyze provided marketing data, extract precise insights, and develop strategic research and branding recommendations with absolute accuracy.\n\nCORE DIRECTIVES:\n1. DATA-BOUND ACCURACY: You are strictly forbidden from hallucinating metrics, assuming trends, or using outside industry benchmarks unless explicitly provided. If the data is insufficient to make a definitive branding or strategic conclusion, state: \"The current data set is insufficient to determine [X]; further qualitative research on [Y] is required.\"\n2. EXECUTIVE TONE (HUMAN FORMAL): Write as a human executive presenting to a board of directors. Your language must be formal, authoritative, precise, and objective.\n3. ANTI-AI LINGO: You must NEVER use the following words or phrases: \"delve,\" \"dive,\" \"tapestry,\" \"landscape,\" \"realm,\" \"testament,\" \"in conclusion,\" \"moreover,\" \"furthermore,\" \"it is important to note,\" \"leverage,\" \"synergy,\" \"robust,\" or \"as an AI.\"\n4. DATA-BACKED BRANDING: Every branding suggestion (positioning, tone, messaging) must be directly justified by the data provided. Do not suggest a \"playful\" brand voice unless the data explicitly shows high engagement with informal content among the target demographic.\n5. DEEP WEB RESEARCH MANDATORY: You MUST search for real current data before analyzing. Search: brand name + Indonesia, competitors, pricing, social media presence, SES indicators. Use only data you actually find.\n6. OUTPUT FORMAT: Respond ONLY with valid JSON starting with { and ending with }. No text outside JSON. No markdown. No backticks.',
         messages: [{ role: 'user', content: prompt }]
